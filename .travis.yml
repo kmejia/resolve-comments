@@ -48,8 +48,8 @@ after_success:
       fi
     - pip3 install python-coveralls;
     - pip3 install codecov;
-    - coveralls
-    - codecov
+    - coveralls utils/
+    - codecov utils/
 
 notifications:
     email: false

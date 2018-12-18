@@ -39,7 +39,7 @@ There are two sets of tests to run, the Sublime Text specific tests, and the bac
 
 To run the tests for the Sublime Text front end tests first open the Sublime Text editor. Select Preferences and Package Control. In the panel that pops up select Package Control: Install Package. In the new panel that pops up type UnitTesting and select the first package that shows up. Restart Sublime Text.
 
-To run the UnitTesting Command type Ctrl-Shift-P to open the command panel and type UnitTesting. Click the first result. The tests corresponding to the package should be evalutated and presented to the user.
+To run the UnitTesting Command type Shift-Ctrl-P to open the command panel and type UnitTesting. Click the first result. A panel should popup asking for what package should be tested, type git_comments. The tests corresponding to the package should be evalutated and presented to the user. If the test results don't show up type Shift-Ctrl-P again and type UnitTesting: Show Output Panel.
 
 # Features
 

@@ -33,8 +33,13 @@ This will reset the username and password prompt when "insert_panel" is called a
 
 # How to test
 
-There are two sets of tests to run, the Sublime Text specific tests, and the backend tests. Both tests are run on travis and builds can be viewed at the following link:  https://travis-ci.com/Raphaeljunior/resolve-comments/builds.
+There are two sets of tests to run, the Sublime Text specific tests, and the backend tests. Both tests are run on travis and builds can be viewed at the following link:  https://travis-ci.com/Raphaeljunior/resolve-comments/builds. 
 
+Coverage is reported by the below command. It reports coverage.  
+
+        nosetests --with-coverage
+        
+    
 ## Sublime Text
 
 To run the tests for the Sublime Text front end tests first open the Sublime Text editor. Select Preferences and Package Control. In the panel that pops up select Package Control: Install Package. In the new panel that pops up type UnitTesting and select the first package that shows up. Restart Sublime Text.

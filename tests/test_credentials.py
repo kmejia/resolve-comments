@@ -3,8 +3,8 @@ import sublime
 import sys
 from unittest import TestCase
 version = sublime.version()
-test_credentials = sys.modules["git_comments.base"]
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+test_credentials = sys.modules["git_comments.base"]
 from utils import authenticate  # noqa: E402
 
 
@@ -81,9 +81,20 @@ class TestTokenEmpty(TestCase):
 
 class TestRepoCorrectOrgCorrect(TestCase):
     def mock_panel_list(self):
-        mock_panel_list = [
-            ['Set up db schema and created models', '', 'Raphaeljunior'],
-            ['Setup database', '', 'Raphaeljunior']]
+        mock_panel_list = [['Set up db schema and created models',
+                            '',
+                            'Raphaeljunior',
+                            'Pull Request',
+                            'closed',
+                            'https://github.com/ADI-Labs/culpa2/pull/2',
+                            '2'],
+                           ['Setup database',
+                            '',
+                            'Raphaeljunior',
+                            'Pull Request',
+                            'closed',
+                            'https://github.com/ADI-Labs/culpa2/pull/1',
+                            '1']]
         return mock_panel_list
 
     def test_repo_correct_org_correct(self):

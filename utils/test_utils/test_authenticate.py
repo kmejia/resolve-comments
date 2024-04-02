@@ -316,9 +316,6 @@ class FakeCommentResponse:
         ]
 
 
-
-
-
 class FakeRepoResponse:
 
     def __call__(self, *args, **kwargs):
@@ -1099,6 +1096,83 @@ class FakePRResponse:
             }
         ]
 
+
+class FakeReviewResponse:
+    def __call__(self, *args, **kwargs):
+        return self
+
+    def json(self):
+        return {'reviews':[]}
+
+
+class FakeRepoIssuesResponse:
+    def __call__(self, *args, **kwargs):
+        return self
+
+    def json(self):
+        return {'Issues':[]}
+
+
+class FakeCommentsIssuesResponse:
+    def __call__(self, *args, **kwargs):
+        return self
+
+    def json(self):
+        return {'Comments':[]}
+
+
+class FakePostPRCommentResponse:
+    def __call__(self, *args, **kwargs):
+        return self
+
+    def json(self):
+        return {'response':{}}
+
+
+class FakeEditPRCommentResponse:
+    def __call__(self, *args, **kwargs):
+        return self
+
+    def json(self):
+        return {
+            'response': {}
+        }
+
+
+class FakeDeletePRCommentResponse:
+    def __call__(self, *args, **kwargs):
+        return self
+
+    def json(self):
+        return {
+            'response': {},
+            'status_code': 204
+        }
+
+    def status_code(self):
+        return 204
+
+
+def mock_delete_pr_response():
+    return FakeDeletePRCommentResponse()
+
+
+def mock_edit_pr_comment_response():
+    return FakeEditPRCommentResponse()
+
+
+def mock_post_pr_comment(*args, **kwargs):
+    return FakePostPRCommentResponse()
+
+
+def mocked_fake_comments_issues_response(*args, **kwargs):
+    return FakeCommentsIssuesResponse()
+
+
+def mocked_fake_repo_issues_response(*args, **kwargs):
+    return FakeRepoIssuesResponse()
+
+
 def mocked_requests_get(*args, **kwargs):
     return FakeResponse()
 
@@ -1113,6 +1187,10 @@ def mocked_pr_response(*args, **kwargs):
 
 def mocked_comment_response(*args, **kwargs):
     return FakeCommentResponse()
+
+
+def mocked_pr_reviews_response(*args, **kwargs):
+    return FakeReviewResponse()
 
 
 class TestAuthenticate(unittest.TestCase):
@@ -1132,11 +1210,42 @@ class TestAuthenticate(unittest.TestCase):
 
     @mock.patch('requests.get', mocked_pr_response())
     def test_get_pr(self):
-        pull_requests = self.authenticate.get_pull_requests('ADI-Labs', 'culpa2')
+        pull_requests = self.authenticate.get_pull_requests('owner', 'repo')
         self.assertListEqual(pull_requests, mocked_pr_response().json())
 
     @mock.patch('requests.get', mocked_comment_response())
     def test_get_pr_comments(self):
-        pr_comments =  self.authenticate.get_pr_comments('ADI-Labs', 'culpa2', 2)
+        pr_comments = self.authenticate.get_pr_comments('owner', 'repo', 5)
         print(json.dumps(pr_comments, indent=2))
         self.assertListEqual(pr_comments, mocked_comment_response().json())
+
+    @mock.patch('requests.get', mocked_pr_reviews_response())
+    def test_get_pr_reviews(self):
+        pr_review = self.authenticate.get_pr_reviews('owner', 'repo', 5)
+        self.assertDictEqual(pr_review, mocked_pr_reviews_response().json())
+
+    @mock.patch('requests.get', mocked_fake_repo_issues_response())
+    def test_get_repo_issues(self):
+        repo_issues = self.authenticate.get_repo_issues('owner', 'repo')
+        self.assertDictEqual(repo_issues, mocked_fake_repo_issues_response().json())
+
+    @mock.patch('requests.get', mocked_fake_comments_issues_response())
+    def test_get_comments_issues(self):
+        issue_comments = self.authenticate.get_comments_on_issue('owner', 'repo', 9)
+        self.assertDictEqual(issue_comments, mocked_fake_comments_issues_response().json())
+
+    @mock.patch('requests.post', mock_post_pr_comment())
+    def test_post_comment_response(self):
+        post_comment_response = self.authenticate.post_pr_comment('owner','repo', 9, 'Comment', 'sha', '/home.c', '90')
+        self.assertDictEqual(post_comment_response, mock_post_pr_comment().json())
+
+    @mock.patch('requests.patch', mock_edit_pr_comment_response())
+    def test_edit_comment_response(self):
+        edit_comment_response = self.authenticate.edit_pr_comment('owner', 'repo', 9, 'Edited')
+        self.assertDictEqual(edit_comment_response, mock_edit_pr_comment_response().json())
+
+    @mock.patch('requests.delete', mock_delete_pr_response())
+    def test_delete_comment_response(self):
+        delete_comment_response = self.authenticate.del_pr_comment('owner', 'repo', 9)
+        self.assertEqual(delete_comment_response, mock_delete_pr_response().status_code())
+
